@@ -27,7 +27,9 @@ internal struct UnwrappedAccount: Hashable {
         
         switch baseURL.scheme {
         case nil:
-            baseURL = URL(string: "https://" + baseURLString) ?? baseURL
+            baseURL = URL(string: "http://" + baseURLString) ?? baseURL
+        case "http":
+            break
         case "https":
             break
         default:
