@@ -104,6 +104,7 @@ public extension WebDAV {
 </d:propfind>
 """
         request.httpBody = body.data(using: .utf8)
+        request.setValue("1", forHTTPHeaderField: "Depth")
         
         let task = URLSession(configuration: .ephemeral, delegate: self, delegateQueue: nil).dataTask(with: request) { [weak self] data, response, error in
             var error = WebDAVError.getError(response: response, error: error)
