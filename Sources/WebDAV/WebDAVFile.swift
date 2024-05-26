@@ -39,7 +39,12 @@ public struct WebDAVFile: Identifiable, Codable, Equatable, Hashable {
         let sizeString = properties["size"].element?.text ?? ""
         let size = sizeString != "" ? Int(sizeString) ?? 0 : 0
         let etag = properties["getetag"].element?.text ?? ""
-        let isDirectory = properties["getcontenttype"].element?.text == "httpd/unix-directory"
+        var isDirectory = false
+        if properties["getcontenttype"].element?.text == "httpd/unix-directory" {
+            isDirectory = true
+        } else if path.last == "/" {
+            isDirectory = true
+        }
         
         if let decodedPath = path.removingPercentEncoding {
             path = decodedPath
