@@ -2,10 +2,14 @@
 //  WebDAV+DiskCache.swift
 //  WebDAV-Swift
 //
-//  Created by Isaac Lyons on 4/7/21.
+//  Created by Isaac Lyons on 11/9/20.
 //
 
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 //MARK: Public
 
@@ -200,21 +204,21 @@ extension WebDAV {
     
     //MARK: Thumbnail Cache
     
-    func loadCachedThumbnailFromDisk<A: WebDAVAccount>(forItemAtPath path: String, account: A, with properties: ThumbnailProperties) -> UIImage? {
+    func loadCachedThumbnailFromDisk<A: WebDAVAccount>(forItemAtPath path: String, account: A, with properties: ThumbnailProperties) -> PlatformImage? {
         guard let url = cachedThumbnailURL(forItemAtPath: path, account: account, with: properties),
               FileManager.default.fileExists(atPath: url.path),
               let data = try? Data(contentsOf: url),
-              let thumbnail = UIImage(data: data) else { return nil }
+              let thumbnail = PlatformImage(data: data) else { return nil }
         saveToMemoryCache(thumbnail: thumbnail, forItemAtPath: path, account: account, with: properties)
         return thumbnail
     }
     
-    func loadAllCachedThumbnailsFromDisk<A: WebDAVAccount>(forItemAtPath path: String, account: A) throws -> [ThumbnailProperties: UIImage]? {
+    func loadAllCachedThumbnailsFromDisk<A: WebDAVAccount>(forItemAtPath path: String, account: A) throws -> [ThumbnailProperties: PlatformImage]? {
         guard let urls = try getAllCachedThumbnailURLs(forItemAtPath: path, account: account) else { return nil }
-        let thumbnails = try urls.compactMap { url -> (ThumbnailProperties, UIImage)? in
+        let thumbnails = try urls.compactMap { url -> (ThumbnailProperties, PlatformImage)? in
             // Load the thumbnail
             let data = try Data(contentsOf: url)
-            guard let thumbnail = UIImage(data: data) else { return nil }
+            guard let thumbnail = PlatformImage(data: data) else { return nil }
             
             // Decode the thumbnail properties
             let properties: ThumbnailProperties

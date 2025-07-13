@@ -5,7 +5,11 @@
 //  Created by Isaac Lyons on 10/29/20.
 //
 
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 import SWXMLHash
 
 public class WebDAV: NSObject, URLSessionDelegate {
@@ -18,8 +22,8 @@ public class WebDAV: NSObject, URLSessionDelegate {
     
     public var filesCache: [AccountPath: [WebDAVFile]] = [:]
     public var dataCache = Cache<AccountPath, Data>()
-    public var imageCache = Cache<AccountPath, UIImage>()
-    public var thumbnailCache = Cache<AccountPath, [ThumbnailProperties: UIImage]>()
+    public var imageCache = Cache<AccountPath, PlatformImage>()
+    public var thumbnailCache = Cache<AccountPath, [ThumbnailProperties: PlatformImage]>()
     
     public override init() {
         super.init()
